@@ -4,7 +4,6 @@ import 'vuetify/styles'
 import { createVuetify } from 'vuetify'
 import { VDateInput } from 'vuetify/labs/VDateInput'
 import { pt } from 'vuetify/locale';
-import { VDataTable } from 'vuetify/lib/components/index.mjs'
 
 export default defineNuxtPlugin((app) => {
   const vuetify = createVuetify({
@@ -28,7 +27,6 @@ export default defineNuxtPlugin((app) => {
     },
   })
   app.vueApp.use(vuetify)
-  app.vueApp.use(VDataTable)
 })
 
 

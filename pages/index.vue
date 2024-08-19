@@ -1,15 +1,16 @@
 <template>
-  <v-container class="main-container" fluid>
+  <div v-if="pending">Carregando..</div>
+  <div v-else-if="error">{{ error.message }}</div>
+  <v-container v-else class="main-container" fluid>
     <v-row align="center" justify="center">
-      <v-col cols="auto">
-        <h1 style="margin-left: 120px; margin-bottom: 40px;color: #4c8132;">Panel Enquete</h1>
+      <v-col cols="12" md="4" class="text-center">
+        <h1 style="margin-bottom: 20px;color: #4c8132;">Panel Enquete</h1>
         <v-btn style="background-color: #79ce4e;color: white;" @click="openModal">Criar Nova Enquete</v-btn>
-        <v-btn style="background-color: #79ce4e;color: white;">Enquetes Anteriores</v-btn>
       </v-col>
       <PollResults :polls="polls" />
     </v-row>
     <v-dialog v-model="isModalOpen" max-width="800">
-      <CreatePoll @poll-created="addPoll" />
+      <CreatePoll @poll-created="addPoll" @close-modal="closeModal" @update-polls="updatePolls"/>
     </v-dialog>
   </v-container>
 </template>
@@ -18,14 +19,25 @@
 const isModalOpen = ref(false);
 const polls = ref([]);
 
+const { data:enquetes, error,pending } = await useLazyFetch('/api/poll');
+ polls.value = enquetes.value;
+
 const openModal = () => {
   isModalOpen.value = true;
+};
+
+const closeModal = () => {
+  isModalOpen.value = false;
 };
 
 const addPoll = (poll) => {
   polls.value.push(poll);
   isModalOpen.value = false;
 };
+
+function updatePolls(updatedPolls) {
+  polls.value = updatedPolls;
+}
 </script>
 
 <style scoped>
@@ -35,9 +47,5 @@ const addPoll = (poll) => {
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-.v-btn {
-  margin: 10px;
 }
 </style>
